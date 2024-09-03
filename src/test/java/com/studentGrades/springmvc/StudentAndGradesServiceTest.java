@@ -8,13 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestPropertySource(value = "/application.properties")
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class StudentAndGradesServiceTest {
     @Autowired
     private StudentService studentService;
@@ -55,6 +59,20 @@ public class StudentAndGradesServiceTest {
         studentService.deleteStudentById(1);
         deletedStudent = studentDao.findById(1);
         assertFalse(deletedStudent.isPresent(),"Student should not be present");
-
+    }
+    @DisplayName("Test number of Students in DB")
+    @Test
+    @Order(1)
+    @Sql("/insertData.sql") // inserts and executes sql
+//    if we want to add multiple entries for this particular test we can make use of
+//    @Sql and pass in our sql file( create a sql file under resources )
+    public void test_getGradeBook(){
+        Iterable<CollegeStudent> iterable = studentService.getGradeBook();
+        List<CollegeStudent> collegeStudents = new ArrayList<>();
+        for(CollegeStudent student : iterable){
+            collegeStudents.add(student);
+        }
+        assertEquals(5,collegeStudents.size(),
+                "No. of students should equals 1 as we only have 1 test user");
     }
 }

@@ -33,4 +33,9 @@ public class StudentServiceImpl implements StudentService{
             studentDao.deleteById(studentID);
         }
     }
+
+    @Override
+    public Iterable<CollegeStudent> getGradeBook() {
+        return studentDao.findAll();
+    }
 }
