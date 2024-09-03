@@ -2,7 +2,7 @@ package com.studentGrades.springmvc;
 
 import com.studentGrades.springmvc.dao.StudentDao;
 import com.studentGrades.springmvc.models.CollegeStudent;
-import com.studentGrades.springmvc.service.StudentService;
+import com.studentGrades.springmvc.service.StudentAndGradeService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class StudentAndGradesServiceTest {
     @Autowired
-    private StudentService studentService;
+    private StudentAndGradeService studentAndGradeService;
     @Autowired
     private StudentDao studentDao;
     @Autowired
@@ -38,7 +38,7 @@ public class StudentAndGradesServiceTest {
     @DisplayName("Test create student")
     @Test
     public void createStudentService(){
-        studentService.createStudent("Eric", "Eric", "eric@yahoo.in");
+        studentAndGradeService.createStudent("Eric", "Eric", "eric@yahoo.in");
         CollegeStudent student = studentDao.findByEmailAddress("eric@yahoo.in");
         assertEquals("eric@yahoo.in", student.getEmailAddress(),
                 "email of the saved student must be same!");
@@ -46,8 +46,8 @@ public class StudentAndGradesServiceTest {
     @DisplayName("Test Student is Null")
     @Test
     public void test_isStudentNull(){
-        assertTrue(studentService.isStudentNull(1));
-        assertFalse(studentService.isStudentNull(0));
+        assertTrue(studentAndGradeService.isStudentNull(1));
+        assertFalse(studentAndGradeService.isStudentNull(0));
     }
     @DisplayName("Test to Delete Student")
     @Test
@@ -56,7 +56,7 @@ public class StudentAndGradesServiceTest {
 //        check if student already exists.
         assertTrue(deletedStudent.isPresent(),"Student should be present");
 //        check if student is deleted after Deleting from DB
-        studentService.deleteStudentById(1);
+        studentAndGradeService.deleteStudentById(1);
         deletedStudent = studentDao.findById(1);
         assertFalse(deletedStudent.isPresent(),"Student should not be present");
     }
@@ -67,7 +67,7 @@ public class StudentAndGradesServiceTest {
 //    if we want to add multiple entries for this particular test we can make use of
 //    @Sql and pass in our sql file( create a sql file under resources )
     public void test_getGradeBook(){
-        Iterable<CollegeStudent> iterable = studentService.getGradeBook();
+        Iterable<CollegeStudent> iterable = studentAndGradeService.getGradeBook();
         List<CollegeStudent> collegeStudents = new ArrayList<>();
         for(CollegeStudent student : iterable){
             collegeStudents.add(student);

@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class StudentServiceImpl implements StudentService{
+public class StudentAndGradeServiceImpl implements StudentAndGradeService {
     @Autowired
     StudentDao studentDao;
     @Override

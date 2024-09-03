@@ -4,7 +4,7 @@ import com.studentGrades.springmvc.models.CollegeStudent;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface StudentService {
+public interface StudentAndGradeService {
 
     void createStudent(String firstName, String lastName, String email);
 
