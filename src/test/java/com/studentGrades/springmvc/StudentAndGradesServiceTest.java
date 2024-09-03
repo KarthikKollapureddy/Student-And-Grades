@@ -48,12 +48,12 @@ public class StudentAndGradesServiceTest {
     @DisplayName("Test to Delete Student")
     @Test
     public void test_DeleteStudent(){
-        Optional<CollegeStudent> student = studentDao.findById(1);
+        Optional<CollegeStudent> deletedStudent = studentDao.findById(1);
 //        check if student already exists.
-        assertTrue(student.isPresent(),"Student should be present");
+        assertTrue(deletedStudent.isPresent(),"Student should be present");
 //        check if student is deleted after Deleting from DB
         studentDao.deleteById(1);
-        Optional<CollegeStudent> deletedStudent = studentDao.findById(1);
+        deletedStudent = studentDao.findById(1);
         assertFalse(deletedStudent.isPresent(),"Student should not be present");
 
     }
