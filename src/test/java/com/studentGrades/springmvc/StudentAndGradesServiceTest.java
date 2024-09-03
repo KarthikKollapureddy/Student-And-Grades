@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestPropertySource(value = "/application.properties")
@@ -42,5 +44,17 @@ public class StudentAndGradesServiceTest {
     public void test_isStudentNull(){
         assertTrue(studentService.isStudentNull(1));
         assertFalse(studentService.isStudentNull(0));
+    }
+    @DisplayName("Test to Delete Student")
+    @Test
+    public void test_DeleteStudent(){
+        Optional<CollegeStudent> student = studentDao.findById(1);
+//        check if student already exists.
+        assertTrue(student.isPresent(),"Student should be present");
+//        check if student is deleted after Deleting from DB
+        studentDao.deleteById(1);
+        Optional<CollegeStudent> deletedStudent = studentDao.findById(1);
+        assertFalse(deletedStudent.isPresent(),"Student should not be present");
+
     }
 }
