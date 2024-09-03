@@ -8,4 +8,6 @@ public interface StudentService {
     void createStudent(String firstName, String lastName, String email);
 
     boolean isStudentNull(int studentID);
+
+    void deleteStudentById(int studentID);
 }

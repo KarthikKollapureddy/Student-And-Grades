@@ -26,4 +26,11 @@ public class StudentServiceImpl implements StudentService{
         Optional<CollegeStudent> student = studentDao.findById(studentID);
         return student.isPresent();
     }
+
+    @Override
+    public void deleteStudentById(int studentID) {
+        if(isStudentNull(studentID)){
+            studentDao.deleteById(studentID);
+        }
+    }
 }

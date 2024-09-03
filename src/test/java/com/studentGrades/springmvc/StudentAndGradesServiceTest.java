@@ -52,7 +52,7 @@ public class StudentAndGradesServiceTest {
 //        check if student already exists.
         assertTrue(deletedStudent.isPresent(),"Student should be present");
 //        check if student is deleted after Deleting from DB
-        studentDao.deleteById(1);
+        studentService.deleteStudentById(1);
         deletedStudent = studentDao.findById(1);
         assertFalse(deletedStudent.isPresent(),"Student should not be present");
 
