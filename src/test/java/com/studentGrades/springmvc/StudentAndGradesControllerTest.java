@@ -1,5 +1,6 @@
 package com.studentGrades.springmvc;
 
+import com.studentGrades.springmvc.dao.StudentDao;
 import com.studentGrades.springmvc.models.CollegeStudent;
 import com.studentGrades.springmvc.models.GradebookCollegeStudent;
 import com.studentGrades.springmvc.service.StudentAndGradeService;
@@ -21,8 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,6 +37,8 @@ public class StudentAndGradesControllerTest {
     JdbcTemplate jdbc;
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private StudentDao studentDao;
 
     @BeforeAll
     public static void setup(){
@@ -84,5 +86,13 @@ public class StudentAndGradesControllerTest {
                 .param("emailAddress", request.getParameterValues("emailAddress")))
                 .andExpect(status().isOk())
                 .andReturn();
+        ModelAndViewAssert.assertViewName(mv.getModelAndView(), "index");
+
+        CollegeStudent verifyCollegeStudent = studentDao
+                .findByEmailAddress(request.getParameter("emailAddress"));
+        assertNotNull(verifyCollegeStudent);
+        assertEquals("John@gmail.com",
+                verifyCollegeStudent.getEmailAddress(),
+                "Student email is same as expected !");
     }
 }
