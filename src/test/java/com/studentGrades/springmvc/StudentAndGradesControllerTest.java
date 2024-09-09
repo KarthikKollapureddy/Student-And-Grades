@@ -3,14 +3,12 @@ package com.studentGrades.springmvc;
 import com.studentGrades.springmvc.models.CollegeStudent;
 import com.studentGrades.springmvc.models.GradebookCollegeStudent;
 import com.studentGrades.springmvc.service.StudentAndGradeService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.ModelAndViewAssert;
@@ -20,22 +18,33 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @SpringBootTest
 public class StudentAndGradesControllerTest {
+    private static MockHttpServletRequest request;
     @Mock
     private StudentAndGradeService studentAndGradeService;
     @Autowired
     JdbcTemplate jdbc;
     @Autowired
     private MockMvc mockMvc;
+
+    @BeforeAll
+    public static void setup(){
+        request =  new MockHttpServletRequest();
+        request.setParameter("firstname", "John");
+        request.setParameter("lastname", "Ericsson");
+        request.setParameter("emailAddress", "John@gmail.com");
+    }
 
     @BeforeEach
     public void setupDataBase(){
@@ -65,5 +74,15 @@ public class StudentAndGradesControllerTest {
         ModelAndView mv = result.getModelAndView();
         assertNotNull(mv);
         ModelAndViewAssert.assertViewName(mv, "index");
+    }
+    @Test
+    public void test_postRequest() throws Exception{
+        MvcResult mv = this.mockMvc.perform(post("/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("firstname", request.getParameterValues("firstname"))
+                .param("lastname", request.getParameterValues("lastname"))
+                .param("emailAddress", request.getParameterValues("emailAddress")))
+                .andExpect(status().isOk())
+                .andReturn();
     }
 }
