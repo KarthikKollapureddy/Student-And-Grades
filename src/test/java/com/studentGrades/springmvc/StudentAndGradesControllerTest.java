@@ -19,11 +19,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -79,6 +79,10 @@ public class StudentAndGradesControllerTest {
     }
     @Test
     public void test_postRequest() throws Exception{
+        CollegeStudent student = new CollegeStudent("Eric",
+                "John", "eric@gmail.com");
+        List<CollegeStudent> collegeStudentList = new ArrayList<>(List.of(student));
+        when(studentAndGradeService.getGradeBook()).thenReturn(collegeStudentList);
         MvcResult mv = this.mockMvc.perform(post("/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("firstname", request.getParameterValues("firstname"))
@@ -88,11 +92,25 @@ public class StudentAndGradesControllerTest {
                 .andReturn();
         ModelAndViewAssert.assertViewName(mv.getModelAndView(), "index");
 
+        assertIterableEquals(collegeStudentList,studentAndGradeService.getGradeBook());
+
         CollegeStudent verifyCollegeStudent = studentDao
                 .findByEmailAddress(request.getParameter("emailAddress"));
         assertNotNull(verifyCollegeStudent);
         assertEquals("John@gmail.com",
                 verifyCollegeStudent.getEmailAddress(),
                 "Student email is same as expected !");
+    }
+
+    @Test
+    public void test_DeleteStudent() throws Exception {
+        assertTrue(studentDao.findById(1).isPresent());
+        MvcResult mvcResult = this.mockMvc.perform(delete("/delete/student/{id}" ,1))
+                .andExpect(status().isOk()).andReturn();
+        ModelAndView mv = mvcResult.getModelAndView();
+        ModelAndViewAssert.assertViewName(mv, "index");
+
+        assertFalse(studentDao.findById(1).isPresent());
+
     }
 }
