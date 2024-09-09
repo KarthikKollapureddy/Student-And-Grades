@@ -113,4 +113,12 @@ public class StudentAndGradesControllerTest {
         assertFalse(studentDao.findById(1).isPresent());
 
     }
+
+    @Test
+    public void test_DeleteHttpRequestWithErrorPage() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(delete("/delete/student/{id}", 0))
+                .andExpect(status().isOk()).andReturn();
+        ModelAndView mv = mvcResult.getModelAndView();
+        ModelAndViewAssert.assertViewName(mv, "error");
+    }
 }
