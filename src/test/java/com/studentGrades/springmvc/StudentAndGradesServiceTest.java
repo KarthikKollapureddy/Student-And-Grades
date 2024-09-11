@@ -1,9 +1,11 @@
 package com.studentGrades.springmvc;
 
+import com.studentGrades.springmvc.dao.HistoryGradeDao;
 import com.studentGrades.springmvc.dao.MathGradeDao;
 import com.studentGrades.springmvc.dao.ScienceGradeDao;
 import com.studentGrades.springmvc.dao.StudentDao;
 import com.studentGrades.springmvc.models.CollegeStudent;
+import com.studentGrades.springmvc.models.HistoryGrade;
 import com.studentGrades.springmvc.models.MathGrade;
 import com.studentGrades.springmvc.models.ScienceGrade;
 import com.studentGrades.springmvc.service.StudentAndGradeService;
@@ -34,6 +36,8 @@ public class StudentAndGradesServiceTest {
     private MathGradeDao mathGradeDao;
     @Autowired
     private ScienceGradeDao scienceGradesDao;
+    @Autowired
+    private HistoryGradeDao historyGradeDao;
     @BeforeEach
     public void setupDataBase(){
         jdbc.execute("INSERT INTO student(id, firstname, lastname, email_address) "+
@@ -88,10 +92,14 @@ public class StudentAndGradesServiceTest {
     public void test_StudentGrades(){
         studentAndGradeService.createGrade(86.87, 1, "Math");
         studentAndGradeService.createGrade(84.43,1,"Science");
+        studentAndGradeService.createGrade(80.03,1,"History");
 
         Iterable<MathGrade> mathGrades = mathGradeDao.findGradeByStudentId(1);
         Iterable<ScienceGrade> scienceGrades = scienceGradesDao.findGradeByStudentId(1);
+        Iterable<HistoryGrade> historyGrades = historyGradeDao.findGradeByStudentId(1);
+
         assertTrue(mathGrades.iterator().hasNext(),"Student has math grades!");
-        assertTrue(scienceGrades.iterator().hasNext(),"Student has math grades!");
+        assertTrue(scienceGrades.iterator().hasNext(),"Student has science grades!");
+        assertTrue(historyGrades.iterator().hasNext(),"Student has history grades!");
     }
 }
