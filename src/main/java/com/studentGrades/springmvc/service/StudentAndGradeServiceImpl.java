@@ -89,4 +89,32 @@ public class StudentAndGradeServiceImpl implements StudentAndGradeService {
         }
         return false;
     }
+
+    @Override
+    public int deleteGrade(int gradeId, String subject) {
+        int studentId  = 0;
+        if(subject.equalsIgnoreCase("Math")){
+            Optional<MathGrade> mathGrade = mathGradeDao.findById(gradeId);
+            if(mathGrade.isPresent()){
+                studentId = mathGrade.get().getStudentId();
+                mathGradeDao.deleteById(gradeId);
+                return studentId;
+            }
+        } else if (subject.equalsIgnoreCase("Science")) {
+            Optional<ScienceGrade> scienceGrade = scienceGradeDao.findById(gradeId);
+            if(scienceGrade.isPresent()){
+                studentId = scienceGrade.get().getStudentId();
+                scienceGradeDao.deleteById(gradeId);
+                return studentId;
+            }
+        }else if (subject.equalsIgnoreCase("History")) {
+            Optional<HistoryGrade> historyGrade = historyGradeDao.findById(gradeId);
+            if(historyGrade.isPresent()){
+                studentId = historyGrade.get().getStudentId();
+                historyGradeDao.deleteById(gradeId);
+                return studentId;
+            }
+        }
+        return studentId;
+    }
 }

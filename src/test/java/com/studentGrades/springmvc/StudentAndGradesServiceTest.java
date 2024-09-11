@@ -117,4 +117,28 @@ public class StudentAndGradesServiceTest {
         assertFalse(studentAndGradeService.createGrade(80.00,-2,"History"));// invalid studentId
         assertFalse(studentAndGradeService.createGrade(00.00,2,"Chemistry"));// invalid subject
     }
+
+    @Test
+    public void test_DeleteGrades(){
+        // should rerun studentID id grade is successfully deleted associated with the student
+        assertEquals(1, studentAndGradeService.deleteGrade(1,"math"),
+                "Return studentID");
+        assertEquals(1, studentAndGradeService.deleteGrade(1,"science"),
+                "Return studentID");
+        assertEquals(1, studentAndGradeService.deleteGrade(1,"history"),
+                "Return studentID");
+    }
+
+    @Test
+    public void test_failingDeleteGrades_invalidGradeId(){
+        assertEquals(0, studentAndGradeService.deleteGrade(-1,"math"));
+        assertEquals(0, studentAndGradeService.deleteGrade(-5,"science"));
+        assertEquals(0, studentAndGradeService.deleteGrade(-2,"history"));
+    }
+    @Test
+    public void test_failingDeleteGrades_invalidSubject(){
+        assertEquals(0, studentAndGradeService.deleteGrade(-1,"math1"));
+        assertEquals(0, studentAndGradeService.deleteGrade(-5,"science1"));
+        assertEquals(0, studentAndGradeService.deleteGrade(-2,"history1"));
+    }
 }
