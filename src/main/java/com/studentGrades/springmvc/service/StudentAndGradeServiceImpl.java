@@ -1,8 +1,11 @@
 package com.studentGrades.springmvc.service;
 
+import com.studentGrades.springmvc.dao.MathGradeDao;
 import com.studentGrades.springmvc.dao.StudentDao;
 import com.studentGrades.springmvc.models.CollegeStudent;
+import com.studentGrades.springmvc.models.MathGrade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -13,6 +16,11 @@ import java.util.Optional;
 public class StudentAndGradeServiceImpl implements StudentAndGradeService {
     @Autowired
     StudentDao studentDao;
+    @Autowired
+    @Qualifier("mathGrades")
+    MathGrade mathGrade;
+    @Autowired
+    private MathGradeDao mathGradeDao;
     @Override
     public void createStudent(String firstName, String lastName, String email) {
         CollegeStudent student = new CollegeStudent(firstName, lastName, email);
@@ -37,5 +45,22 @@ public class StudentAndGradeServiceImpl implements StudentAndGradeService {
     @Override
     public Iterable<CollegeStudent> getGradeBook() {
         return studentDao.findAll();
+    }
+
+    @Override
+    public boolean createGrade(double grade, int studentId, String subject) {
+        if(!isStudentNull(studentId)){
+            return false;
+        }
+        if(grade >= 0 && grade < 100){
+            if (subject.equalsIgnoreCase("Math")){
+                mathGrade.setId(0);
+                mathGrade.setGrade(grade);
+                mathGrade.setStudentId(studentId);
+                mathGradeDao.save(mathGrade);
+                return true;
+            }
+        }
+        return false;
     }
 }

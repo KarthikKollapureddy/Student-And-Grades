@@ -13,4 +13,6 @@ public interface StudentAndGradeService {
     void deleteStudentById(int studentID);
 
     Iterable<CollegeStudent> getGradeBook();
+
+    boolean createGrade(double grade, int studentId, String subject);
 }
