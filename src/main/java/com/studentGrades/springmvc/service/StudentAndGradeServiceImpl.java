@@ -1,9 +1,11 @@
 package com.studentGrades.springmvc.service;
 
 import com.studentGrades.springmvc.dao.MathGradeDao;
+import com.studentGrades.springmvc.dao.ScienceGradeDao;
 import com.studentGrades.springmvc.dao.StudentDao;
 import com.studentGrades.springmvc.models.CollegeStudent;
 import com.studentGrades.springmvc.models.MathGrade;
+import com.studentGrades.springmvc.models.ScienceGrade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,11 @@ public class StudentAndGradeServiceImpl implements StudentAndGradeService {
     MathGrade mathGrade;
     @Autowired
     private MathGradeDao mathGradeDao;
+    @Autowired
+    @Qualifier("scienceGrades")
+    private ScienceGrade scienceGrade;
+    @Autowired
+    private ScienceGradeDao scienceGradeDao;
     @Override
     public void createStudent(String firstName, String lastName, String email) {
         CollegeStudent student = new CollegeStudent(firstName, lastName, email);
@@ -58,6 +65,12 @@ public class StudentAndGradeServiceImpl implements StudentAndGradeService {
                 mathGrade.setGrade(grade);
                 mathGrade.setStudentId(studentId);
                 mathGradeDao.save(mathGrade);
+                return true;
+            } else if (subject.equalsIgnoreCase("Science")) {
+                scienceGrade.setId(0);
+                scienceGrade.setStudentId(1);
+                scienceGrade.setGrade(grade);
+                scienceGradeDao.save(scienceGrade);
                 return true;
             }
         }
