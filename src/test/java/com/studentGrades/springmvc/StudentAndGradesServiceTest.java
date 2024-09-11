@@ -8,6 +8,7 @@ import com.studentGrades.springmvc.models.*;
 import com.studentGrades.springmvc.service.StudentAndGradeService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
@@ -36,20 +37,35 @@ public class StudentAndGradesServiceTest {
     private ScienceGradeDao scienceGradesDao;
     @Autowired
     private HistoryGradeDao historyGradeDao;
+    @Value("${sql.script.create.student}")
+    private String sqlCreateStudent;
+    @Value("${sql.script.delete.student}")
+    private String sqlDeleteStudent;
+    @Value("${sql.script.create.mathGrade}")
+    private String sqlCreateMathGrade;
+    @Value("${sql.script.create.scienceGrade}")
+    private String sqlCreateScienceGrade;
+    @Value("${sql.script.create.historyGrade}")
+    private String sqlCreateHistoryGrade;
+    @Value("${sql.script.delete.mathGrade}")
+    private String sqlDeleteMathGrade;
+    @Value("${sql.script.delete.scienceGrade}")
+    private String sqlDeleteScienceGrade;
+    @Value("${sql.script.delete.historyGrade}")
+    private String sqlDeleteHistoryGrade;
     @BeforeEach
     public void setupDataBase(){
-        jdbc.execute("INSERT INTO student(id, firstname, lastname, email_address) "+
-                "values(1, 'Eric', 'Roby', 'eric.roby@yahoo.in')");
-        jdbc.execute("INSERT INTO math_grade(id, student_id, grade) values(1, 1, 87.98)");
-        jdbc.execute("INSERT INTO science_grade(id, student_id, grade) values(1, 1, 73.58)");
-        jdbc.execute("INSERT INTO history_grade(id, student_id, grade) values(1, 1, 95.72)");
+        jdbc.execute(sqlCreateStudent);
+        jdbc.execute(sqlCreateMathGrade);
+        jdbc.execute(sqlCreateScienceGrade);
+        jdbc.execute(sqlCreateHistoryGrade);
     }
     @AfterEach
     public void cleanUpAfterTransaction(){
-        jdbc.execute("DELETE FROM student");
-        jdbc.execute("DELETE FROM math_grade");
-        jdbc.execute("DELETE FROM science_grade");
-        jdbc.execute("DELETE FROM history_grade");
+        jdbc.execute(sqlDeleteStudent);
+        jdbc.execute(sqlDeleteMathGrade);
+        jdbc.execute(sqlDeleteScienceGrade);
+        jdbc.execute(sqlDeleteHistoryGrade);
     }
     @DisplayName("Test create student")
     @Test

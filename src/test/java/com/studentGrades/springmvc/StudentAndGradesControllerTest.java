@@ -7,11 +7,13 @@ import com.studentGrades.springmvc.service.StudentAndGradeService;
 import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.ModelAndViewAssert;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -23,16 +25,20 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @SpringBootTest
+@TestPropertySource(properties = "./application.properties")
 public class StudentAndGradesControllerTest {
     private static MockHttpServletRequest request;
     @Mock
     private StudentAndGradeService studentAndGradeService;
+    @Value("${sql.script.create.student}")
+    private String sqlCreateStudent;
+    @Value("${sql.script.delete.student}")
+    private String sqlDeleteStudent;
     @Autowired
     JdbcTemplate jdbc;
     @Autowired
@@ -50,12 +56,11 @@ public class StudentAndGradesControllerTest {
 
     @BeforeEach
     public void setupDataBase(){
-        jdbc.execute("INSERT INTO student(id, firstname, lastname, email_address) "+
-                "values(1, 'Eric', 'Roby', 'eric.roby@yahoo.in')");
+        jdbc.execute(sqlCreateStudent);
     }
     @AfterEach
     public void cleanUpAfterTransaction(){
-        jdbc.execute("DELETE FROM student");
+        jdbc.execute(sqlDeleteStudent);
     }
 
     @DisplayName("Test student and grades controller")
@@ -105,7 +110,7 @@ public class StudentAndGradesControllerTest {
     @Test
     public void test_DeleteStudent() throws Exception {
         assertTrue(studentDao.findById(1).isPresent());
-        MvcResult mvcResult = this.mockMvc.perform(delete("/delete/student/{id}" ,1))
+        MvcResult mvcResult = this.mockMvc.perform(get("/delete/student/{id}" ,1))
                 .andExpect(status().isOk()).andReturn();
         ModelAndView mv = mvcResult.getModelAndView();
         ModelAndViewAssert.assertViewName(mv, "index");
@@ -116,7 +121,7 @@ public class StudentAndGradesControllerTest {
 
     @Test
     public void test_DeleteHttpRequestWithErrorPage() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete("/delete/student/{id}", 0))
+        MvcResult mvcResult = mockMvc.perform(get("/delete/student/{id}", 0))
                 .andExpect(status().isOk()).andReturn();
         ModelAndView mv = mvcResult.getModelAndView();
         ModelAndViewAssert.assertViewName(mv, "error");
