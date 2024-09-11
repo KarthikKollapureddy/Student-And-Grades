@@ -90,9 +90,9 @@ public class StudentAndGradesServiceTest {
 
     @Test
     public void test_StudentGrades(){
-        studentAndGradeService.createGrade(86.87, 1, "Math");
-        studentAndGradeService.createGrade(84.43,1,"Science");
-        studentAndGradeService.createGrade(80.03,1,"History");
+        assertTrue(studentAndGradeService.createGrade(86.87, 1, "Math"));
+        assertTrue(studentAndGradeService.createGrade(84.43,1,"Science"));
+        assertTrue(studentAndGradeService.createGrade(80.03,1,"History"));
 
         Iterable<MathGrade> mathGrades = mathGradeDao.findGradeByStudentId(1);
         Iterable<ScienceGrade> scienceGrades = scienceGradesDao.findGradeByStudentId(1);
@@ -101,5 +101,13 @@ public class StudentAndGradesServiceTest {
         assertTrue(mathGrades.iterator().hasNext(),"Student has math grades!");
         assertTrue(scienceGrades.iterator().hasNext(),"Student has science grades!");
         assertTrue(historyGrades.iterator().hasNext(),"Student has history grades!");
+    }
+
+    @Test
+    public void test_failingStudentGrades_for_InvalidGrade_And_Invalid_Student(){
+        assertFalse(studentAndGradeService.createGrade(-80.03,1,"History"));// invalid Grade
+        assertFalse(studentAndGradeService.createGrade(1234,1,"History"));// invalid grade
+        assertFalse(studentAndGradeService.createGrade(80.00,-2,"History"));// invalid studentId
+        assertFalse(studentAndGradeService.createGrade(00.00,2,"Chemistry"));// invalid subject
     }
 }
