@@ -83,7 +83,11 @@ public class StudentAndGradesServiceTest {
     @Test
     public void test_StudentGrades(){
         studentAndGradeService.createGrade(86.87, 1, "Math");
+        studentAndGradeService.createGrade(84.43,1,"Science");
+
         Iterable<MathGrade> mathGrades = mathGradeDao.findGradeByStudentId(1);
+        Iterable<MathGrade> scienceGrades = scienceGradeDao.findGradeByStudentId(1);
         assertTrue(mathGrades.iterator().hasNext(),"Student has math grades!");
+        assertTrue(scienceGrades.iterator().hasNext(),"Student has math grades!");
     }
 }
