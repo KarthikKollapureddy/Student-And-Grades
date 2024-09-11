@@ -4,10 +4,7 @@ import com.studentGrades.springmvc.dao.HistoryGradeDao;
 import com.studentGrades.springmvc.dao.MathGradeDao;
 import com.studentGrades.springmvc.dao.ScienceGradeDao;
 import com.studentGrades.springmvc.dao.StudentDao;
-import com.studentGrades.springmvc.models.CollegeStudent;
-import com.studentGrades.springmvc.models.HistoryGrade;
-import com.studentGrades.springmvc.models.MathGrade;
-import com.studentGrades.springmvc.models.ScienceGrade;
+import com.studentGrades.springmvc.models.*;
 import com.studentGrades.springmvc.service.StudentAndGradeService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,5 +150,23 @@ public class StudentAndGradesServiceTest {
         assertEquals(0, studentAndGradeService.deleteGrade(-1,"math1"));
         assertEquals(0, studentAndGradeService.deleteGrade(-5,"science1"));
         assertEquals(0, studentAndGradeService.deleteGrade(-2,"history1"));
+    }
+
+    @Test
+    public void test_StudentInformation(){
+        GradebookCollegeStudent gradebookCollegeStudent = studentAndGradeService
+                .getGradebookCollegeStudent(1);
+        assertEquals("Eric",gradebookCollegeStudent.getFirstname());
+        assertEquals("Roby",gradebookCollegeStudent.getLastname());
+        assertEquals("eric.roby@yahoo.in",gradebookCollegeStudent.getEmailAddress());
+        assertEquals(1, gradebookCollegeStudent.getStudentGrades().getMathGradeResults().size());
+        assertEquals(1, gradebookCollegeStudent.getStudentGrades().getScienceGradeResults().size());
+        assertEquals(1, gradebookCollegeStudent.getStudentGrades().getHistoryGradeResults().size());
+
+    }
+    @Test
+    public void test_studentInformation_With_InvalidStudentID(){
+        assertNull(studentAndGradeService
+                .getGradebookCollegeStudent(33));
     }
 }
