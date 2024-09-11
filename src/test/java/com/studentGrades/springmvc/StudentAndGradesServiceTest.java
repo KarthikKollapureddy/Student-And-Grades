@@ -42,10 +42,16 @@ public class StudentAndGradesServiceTest {
     public void setupDataBase(){
         jdbc.execute("INSERT INTO student(id, firstname, lastname, email_address) "+
                 "values(1, 'Eric', 'Roby', 'eric.roby@yahoo.in')");
+        jdbc.execute("INSERT INTO math_grade(id, student_id, grade) values(1, 1, 87.98)");
+        jdbc.execute("INSERT INTO science_grade(id, student_id, grade) values(1, 1, 73.58)");
+        jdbc.execute("INSERT INTO history_grade(id, student_id, grade) values(1, 1, 95.72)");
     }
     @AfterEach
     public void cleanUpAfterTransaction(){
         jdbc.execute("DELETE FROM student");
+        jdbc.execute("DELETE FROM math_grade");
+        jdbc.execute("DELETE FROM science_grade");
+        jdbc.execute("DELETE FROM history_grade");
     }
     @DisplayName("Test create student")
     @Test
