@@ -72,12 +72,25 @@ public class StudentAndGradesServiceTest {
     @Test
     public void test_DeleteStudent(){
         Optional<CollegeStudent> deletedStudent = studentDao.findById(1);
+        Optional<MathGrade> mathGrade = mathGradeDao.findById(1);
+        Optional<ScienceGrade> scienceGrade = scienceGradesDao.findById(1);
+        Optional<HistoryGrade> historyGrade = historyGradeDao.findById(1);
 //        check if student already exists.
         assertTrue(deletedStudent.isPresent(),"Student should be present");
+        assertTrue(mathGrade.isPresent());
+        assertTrue(scienceGrade.isPresent());
+        assertTrue(historyGrade.isPresent());
 //        check if student is deleted after Deleting from DB
         studentAndGradeService.deleteStudentById(1);
+
         deletedStudent = studentDao.findById(1);
+        mathGrade = mathGradeDao.findById(1);
+        scienceGrade = scienceGradesDao.findById(1);
+        historyGrade = historyGradeDao.findById(1);
         assertFalse(deletedStudent.isPresent(),"Student should not be present");
+        assertFalse(mathGrade.isPresent());
+        assertFalse(scienceGrade.isPresent());
+        assertFalse(historyGrade.isPresent());
     }
     @DisplayName("Test number of Students in DB")
     @Test

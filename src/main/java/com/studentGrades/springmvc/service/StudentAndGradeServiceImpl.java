@@ -53,6 +53,9 @@ public class StudentAndGradeServiceImpl implements StudentAndGradeService {
     public void deleteStudentById(int studentID) {
         if(isStudentNull(studentID)){
             studentDao.deleteById(studentID);
+            mathGradeDao.deleteGradeByStudentId(studentID);
+            scienceGradeDao.deleteGradeByStudentId(studentID);
+            historyGradeDao.deleteGradeByStudentId(studentID);
         }
     }
 
