@@ -199,4 +199,27 @@ public class StudentAndGradesControllerTest {
         ModelAndView mav = mvcResult.getModelAndView();
         ModelAndViewAssert.assertViewName(mav,"error");
     }
+
+    @Test
+    public void test_DeleteGrades() throws Exception{
+        assertTrue(studentDao.findById(1).isPresent());
+        GradebookCollegeStudent studentEntity = studentService.getGradebookCollegeStudent(1);
+        assertEquals(1,studentEntity.getStudentGrades().getMathGradeResults().size());
+        MvcResult mvcResult = mockMvc.perform(delete("/grades/{id}/{gradeType}",1,"math"))
+                .andExpect(status().isOk())
+                .andReturn();
+        studentEntity = studentService.getGradebookCollegeStudent(1);
+        assertEquals(0,studentEntity.getStudentGrades().getMathGradeResults().size());
+        ModelAndView modelAndView = mvcResult.getModelAndView();
+        ModelAndViewAssert.assertViewName(modelAndView,"studentInformation");
+    }
+    @Test
+    public void test_DeleteGrades_Invalid() throws Exception{
+        assertFalse(studentDao.findById(100).isPresent());
+        MvcResult mvcResult = mockMvc.perform(delete("/grades/{id}/{gradeType}",100,"math"))
+                .andExpect(status().isOk())
+                .andReturn();
+        ModelAndView modelAndView = mvcResult.getModelAndView();
+        ModelAndViewAssert.assertViewName(modelAndView,"error");
+    }
 }
