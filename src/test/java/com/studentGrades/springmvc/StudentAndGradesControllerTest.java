@@ -45,6 +45,20 @@ public class StudentAndGradesControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private StudentDao studentDao;
+    @Value("${sql.script.create.mathGrade}")
+    private String sqlCreateMathGrade;
+    @Value("${sql.script.create.scienceGrade}")
+    private String sqlCreateScienceGrade;
+    @Value("${sql.script.create.historyGrade}")
+    private String sqlCreateHistoryGrade;
+    @Value("${sql.script.delete.mathGrade}")
+    private String sqlDeleteMathGrade;
+    @Value("${sql.script.delete.scienceGrade}")
+    private String sqlDeleteScienceGrade;
+    @Value("${sql.script.delete.historyGrade}")
+    private String sqlDeleteHistoryGrade;
+    @Autowired
+    private StudentAndGradeService studentService;
 
     @BeforeAll
     public static void setup(){
@@ -57,10 +71,16 @@ public class StudentAndGradesControllerTest {
     @BeforeEach
     public void setupDataBase(){
         jdbc.execute(sqlCreateStudent);
+        jdbc.execute(sqlCreateMathGrade);
+        jdbc.execute(sqlCreateScienceGrade);
+        jdbc.execute(sqlCreateHistoryGrade);
     }
     @AfterEach
     public void cleanUpAfterTransaction(){
         jdbc.execute(sqlDeleteStudent);
+        jdbc.execute(sqlDeleteMathGrade);
+        jdbc.execute(sqlDeleteScienceGrade);
+        jdbc.execute(sqlDeleteHistoryGrade);
     }
 
     @DisplayName("Test student and grades controller")
@@ -125,5 +145,38 @@ public class StudentAndGradesControllerTest {
                 .andExpect(status().isOk()).andReturn();
         ModelAndView mv = mvcResult.getModelAndView();
         ModelAndViewAssert.assertViewName(mv, "error");
+    }
+
+    @Test
+    public void test_getStudentInformation_Positive() throws Exception{
+        assertTrue(studentDao.findById(1).isPresent());
+        MvcResult mvcResult = mockMvc.perform(get("/studentInformation/{id}",1))
+                .andExpect(status().isOk()).andReturn();
+        ModelAndView mv = mvcResult.getModelAndView();
+        ModelAndViewAssert.assertViewName(mv,"studentInformation");
+    }
+    @Test
+    public void test_getStudentInformation_Error() throws Exception{
+        assertFalse(studentDao.findById(100).isPresent());
+        MvcResult mvcResult = mockMvc.perform(get("/studentInformation/{id}",100))
+                .andExpect(status().isOk()).andReturn();
+        ModelAndView mv = mvcResult.getModelAndView();
+        ModelAndViewAssert.assertViewName(mv,"error");
+    }
+
+    @Test
+    public void test_createGrades_HttpRequest() throws Exception{
+        assertTrue(studentDao.findById(1).isPresent());
+        GradebookCollegeStudent student = studentService.getGradebookCollegeStudent(1);
+        assertEquals(1,student.getStudentGrades().getMathGradeResults().size());
+        MvcResult mvcResult = mockMvc.perform(post("/grades")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("studentId","1")
+                .param("grade","87.9")
+                .param("gradeType","math")
+        ).andExpect(status().isOk()).andReturn();
+        student = studentService.getGradebookCollegeStudent(1);
+        assertEquals(2,student.getStudentGrades().getMathGradeResults().size());
+
     }
 }

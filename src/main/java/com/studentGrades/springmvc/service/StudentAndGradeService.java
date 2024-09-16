@@ -9,7 +9,7 @@ public interface StudentAndGradeService {
 
     void createStudent(String firstName, String lastName, String email);
 
-    boolean isStudentNull(int studentID);
+    boolean isStudentNotNull(int studentID);
 
     void deleteStudentById(int studentID);
 
@@ -20,4 +20,5 @@ public interface StudentAndGradeService {
     int deleteGrade(int gradeId, String subject);
 
     GradebookCollegeStudent getGradebookCollegeStudent(int studentId);
+
 }

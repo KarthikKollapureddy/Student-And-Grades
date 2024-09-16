@@ -77,9 +77,9 @@ public class StudentAndGradesServiceTest {
     }
     @DisplayName("Test Student is Null")
     @Test
-    public void test_isStudentNull(){
-        assertTrue(studentAndGradeService.isStudentNull(1));
-        assertFalse(studentAndGradeService.isStudentNull(0));
+    public void test_isStudentNotNull(){
+        assertTrue(studentAndGradeService.isStudentNotNull(1));
+        assertFalse(studentAndGradeService.isStudentNotNull(0));
     }
     @DisplayName("Test to Delete Student")
     @Test

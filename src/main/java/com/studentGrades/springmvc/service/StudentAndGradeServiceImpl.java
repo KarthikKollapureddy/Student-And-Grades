@@ -8,6 +8,7 @@ import com.studentGrades.springmvc.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -45,14 +46,14 @@ public class StudentAndGradeServiceImpl implements StudentAndGradeService {
     }
 
     @Override
-    public boolean isStudentNull(int studentID) {
+    public boolean isStudentNotNull(int studentID) {
         Optional<CollegeStudent> student = studentDao.findById(studentID);
         return student.isPresent();
     }
 
     @Override
     public void deleteStudentById(int studentID) {
-        if(isStudentNull(studentID)){
+        if(isStudentNotNull(studentID)){
             studentDao.deleteById(studentID);
             mathGradeDao.deleteGradeByStudentId(studentID);
             scienceGradeDao.deleteGradeByStudentId(studentID);
@@ -67,7 +68,7 @@ public class StudentAndGradeServiceImpl implements StudentAndGradeService {
 
     @Override
     public boolean createGrade(double grade, int studentId, String subject) {
-        if(!isStudentNull(studentId)){
+        if(!isStudentNotNull(studentId)){
             return false;
         }
         if(grade >= 0 && grade < 100){
@@ -153,4 +154,5 @@ public class StudentAndGradeServiceImpl implements StudentAndGradeService {
         }
         return null;
     }
+
 }
