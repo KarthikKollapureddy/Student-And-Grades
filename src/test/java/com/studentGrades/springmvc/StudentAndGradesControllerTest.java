@@ -205,7 +205,7 @@ public class StudentAndGradesControllerTest {
         assertTrue(studentDao.findById(1).isPresent());
         GradebookCollegeStudent studentEntity = studentService.getGradebookCollegeStudent(1);
         assertEquals(1,studentEntity.getStudentGrades().getMathGradeResults().size());
-        MvcResult mvcResult = mockMvc.perform(delete("/grades/{id}/{gradeType}",1,"math"))
+        MvcResult mvcResult = mockMvc.perform(get("/grades/{id}/{gradeType}",1,"math"))
                 .andExpect(status().isOk())
                 .andReturn();
         studentEntity = studentService.getGradebookCollegeStudent(1);
@@ -216,7 +216,7 @@ public class StudentAndGradesControllerTest {
     @Test
     public void test_DeleteGrades_InvalidID() throws Exception{
         assertFalse(studentDao.findById(100).isPresent());
-        MvcResult mvcResult = mockMvc.perform(delete("/grades/{id}/{gradeType}",100,"math"))
+        MvcResult mvcResult = mockMvc.perform(get("/grades/{id}/{gradeType}",100,"math"))
                 .andExpect(status().isOk())
                 .andReturn();
         ModelAndView modelAndView = mvcResult.getModelAndView();
@@ -225,7 +225,7 @@ public class StudentAndGradesControllerTest {
     @Test
     public void test_DeleteGrades_InvalidSubject() throws Exception{
         assertTrue(studentDao.findById(1).isPresent());
-        MvcResult mvcResult = mockMvc.perform(delete("/grades/{id}/{gradeType}",100,"wasd"))
+        MvcResult mvcResult = mockMvc.perform(get("/grades/{id}/{gradeType}",100,"wasd"))
                 .andExpect(status().isOk())
                 .andReturn();
         ModelAndView modelAndView = mvcResult.getModelAndView();

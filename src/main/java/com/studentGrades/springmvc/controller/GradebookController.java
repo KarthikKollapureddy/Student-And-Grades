@@ -68,6 +68,7 @@ public class GradebookController {
                             @RequestParam double grade,
                             @RequestParam String gradeType,
                             Model m) {
+        System.out.println("grades");
         if (studentAndGradeService.isStudentNotNull(studentId)) {
             studentAndGradeService.createGrade(grade, studentId, gradeType);
             studentAndGradeService.configureStudentInformation(studentId, m);
@@ -76,7 +77,7 @@ public class GradebookController {
         return "error";
 
     }
-    @DeleteMapping("/grades/{id}/{gradeType}")
+    @GetMapping("/grades/{id}/{gradeType}")
     public String deleteGrade(@PathVariable int id,
                               @PathVariable String gradeType,
                               Model m){
