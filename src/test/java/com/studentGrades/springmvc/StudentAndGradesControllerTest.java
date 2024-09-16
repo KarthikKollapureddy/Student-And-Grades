@@ -5,6 +5,8 @@ import com.studentGrades.springmvc.models.CollegeStudent;
 import com.studentGrades.springmvc.models.GradebookCollegeStudent;
 import com.studentGrades.springmvc.service.StudentAndGradeService;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -177,6 +180,23 @@ public class StudentAndGradesControllerTest {
         ).andExpect(status().isOk()).andReturn();
         student = studentService.getGradebookCollegeStudent(1);
         assertEquals(2,student.getStudentGrades().getMathGradeResults().size());
+        ModelAndViewAssert.assertViewName(Objects.requireNonNull(mvcResult.getModelAndView()),"studentInformation");
 
+    }
+    @ParameterizedTest(name = "Test with id: {0} and grade: {1} and gradeType: {2}")
+    @CsvSource({"100,98.88,math",
+            "0,98888,math",
+            "00,98.88,chem"
+    })
+    public void test_createGrades_HttpRequest_Invalid(int id, double grade, String gradeType) throws Exception{
+        assertFalse(studentDao.findById(id).isPresent());
+        MvcResult mvcResult = mockMvc.perform(post("/grades")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("studentId", String.valueOf(id))
+                .param("grade", String.valueOf(grade))
+                .param("gradeType",gradeType)
+        ).andExpect(status().isOk()).andReturn();
+        ModelAndView mav = mvcResult.getModelAndView();
+        ModelAndViewAssert.assertViewName(mav,"error");
     }
 }
