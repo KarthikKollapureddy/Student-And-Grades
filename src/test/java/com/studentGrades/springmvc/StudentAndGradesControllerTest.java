@@ -214,9 +214,18 @@ public class StudentAndGradesControllerTest {
         ModelAndViewAssert.assertViewName(modelAndView,"studentInformation");
     }
     @Test
-    public void test_DeleteGrades_Invalid() throws Exception{
+    public void test_DeleteGrades_InvalidID() throws Exception{
         assertFalse(studentDao.findById(100).isPresent());
         MvcResult mvcResult = mockMvc.perform(delete("/grades/{id}/{gradeType}",100,"math"))
+                .andExpect(status().isOk())
+                .andReturn();
+        ModelAndView modelAndView = mvcResult.getModelAndView();
+        ModelAndViewAssert.assertViewName(modelAndView,"error");
+    }
+    @Test
+    public void test_DeleteGrades_InvalidSubject() throws Exception{
+        assertTrue(studentDao.findById(1).isPresent());
+        MvcResult mvcResult = mockMvc.perform(delete("/grades/{id}/{gradeType}",100,"wasd"))
                 .andExpect(status().isOk())
                 .andReturn();
         ModelAndView modelAndView = mvcResult.getModelAndView();
