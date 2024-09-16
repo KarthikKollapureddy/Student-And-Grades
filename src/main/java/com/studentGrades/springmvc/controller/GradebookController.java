@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Controller
 public class GradebookController {
@@ -26,7 +27,7 @@ public class GradebookController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String getStudents(Model m) {
         Iterable<CollegeStudent> collegeStudentList = studentAndGradeService.getGradeBook();
-        m.addAttribute("Students", collegeStudentList);
+        m.addAttribute("students", collegeStudentList);
         return "index";
     }
 
@@ -68,7 +69,6 @@ public class GradebookController {
                             @RequestParam double grade,
                             @RequestParam String gradeType,
                             Model m) {
-        System.out.println("grades");
         if (studentAndGradeService.isStudentNotNull(studentId)) {
             studentAndGradeService.createGrade(grade, studentId, gradeType);
             studentAndGradeService.configureStudentInformation(studentId, m);

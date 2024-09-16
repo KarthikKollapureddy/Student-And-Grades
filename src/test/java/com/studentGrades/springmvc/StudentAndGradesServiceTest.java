@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestPropertySource(value = "/application.properties")
+@TestPropertySource(value = "/application-test.properties")
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class StudentAndGradesServiceTest {
