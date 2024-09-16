@@ -3,6 +3,7 @@ package com.studentGrades.springmvc.service;
 import com.studentGrades.springmvc.models.CollegeStudent;
 import com.studentGrades.springmvc.models.GradebookCollegeStudent;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 @Service
 public interface StudentAndGradeService {
@@ -21,4 +22,5 @@ public interface StudentAndGradeService {
 
     GradebookCollegeStudent getGradebookCollegeStudent(int studentId);
 
+    void configureStudentInformation(int studentID, Model m);
 }

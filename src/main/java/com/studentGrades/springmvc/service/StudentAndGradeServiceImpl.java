@@ -155,4 +155,27 @@ public class StudentAndGradeServiceImpl implements StudentAndGradeService {
         return null;
     }
 
+    @Override
+    public void configureStudentInformation(int studentID, Model m) {
+        GradebookCollegeStudent studentEntity = getGradebookCollegeStudent(studentID);
+        m.addAttribute("student",studentEntity);
+        if(studentEntity.getStudentGrades().getMathGradeResults().size() > 0){
+            m.addAttribute("mathAverage", studentEntity.getStudentGrades().findGradePointAverage(
+                    studentEntity.getStudentGrades().getMathGradeResults()
+            ));
+        }else
+            m.addAttribute("mathAverage", "N/A");
+        if(studentEntity.getStudentGrades().getScienceGradeResults().size() > 0){
+            m.addAttribute("scienceAverage", studentEntity.getStudentGrades().findGradePointAverage(
+                    studentEntity.getStudentGrades().getScienceGradeResults()
+            ));
+        }else
+            m.addAttribute("scienceAverage", "N/A");
+        if(studentEntity.getStudentGrades().getHistoryGradeResults().size() > 0){
+            m.addAttribute("HistoryAverage", studentEntity.getStudentGrades().findGradePointAverage(
+                    studentEntity.getStudentGrades().getHistoryGradeResults()
+            ));
+        }else
+            m.addAttribute("HistoryAverage", "N/A");
+    }
 }
