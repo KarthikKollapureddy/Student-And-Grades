@@ -219,10 +219,10 @@ public class StudentAndGradeServiceImpl implements StudentAndGradeService {
         }else
             m.addAttribute("scienceAverage", "N/A");
         if(studentEntity.getStudentGrades().getHistoryGradeResults().size() > 0){
-            m.addAttribute("HistoryAverage", studentEntity.getStudentGrades().findGradePointAverage(
+            m.addAttribute("historyAverage", studentEntity.getStudentGrades().findGradePointAverage(
                     studentEntity.getStudentGrades().getHistoryGradeResults()
             ));
         }else
-            m.addAttribute("HistoryAverage", "N/A");
+            m.addAttribute("historyAverage", "N/A");
     }
 }

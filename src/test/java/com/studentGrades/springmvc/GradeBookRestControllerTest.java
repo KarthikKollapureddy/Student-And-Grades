@@ -6,6 +6,7 @@ import com.studentGrades.springmvc.dao.MathGradeDao;
 import com.studentGrades.springmvc.dao.ScienceGradeDao;
 import com.studentGrades.springmvc.dao.StudentDao;
 import com.studentGrades.springmvc.models.CollegeStudent;
+import com.studentGrades.springmvc.models.GradebookCollegeStudent;
 import com.studentGrades.springmvc.service.StudentAndGradeService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -152,6 +153,40 @@ public class GradeBookRestControllerTest {
                 .andExpect(jsonPath("$.status",is(404)))
                 .andExpect(jsonPath("$.message",is("Student or Grade was not found"))
                 );
+    }
+    @Test
+    public void test_createGrade_HttpRequest() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/grades")
+                .param("studentId","1")
+                .param("grade",String.valueOf(87.00))
+                .param("gradeType","math"))
+                .andExpect(jsonPath("$.emailAddress",is("eric.roby@yahoo.in")))
+                .andExpect(content().contentType(APPLICATION_JSON_UTFS))
+                .andExpect(jsonPath("$.fullName",is("Eric Roby")))
+                .andExpect(jsonPath("$.studentGrades.mathGradeResults",hasSize(2)))
+                .andExpect(jsonPath("$.studentGrades.scienceGradeResults",hasSize(1)))
+                .andExpect(jsonPath("$.studentGrades.historyGradeResults",hasSize(1)))
+                .andExpect(status().isOk());
+    }
+  @Test
+    public void test_createGrade_InvalidId_HttpRequest() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/grades")
+                .param("studentId","100")
+                .param("grade",String.valueOf(87.00))
+                .param("gradeType","math"))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.status",is(404)))
+                .andExpect(jsonPath("$.message",is("Student or Grade was not found")));
+    }
+    @Test
+    public void test_createGrade_InvalidGradeType_HttpRequest() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/grades")
+                .param("studentId","1")
+                .param("grade",String.valueOf(87.00))
+                .param("gradeType","math2"))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.status",is(404)))
+                .andExpect(jsonPath("$.message",is("Student or Grade was not found")));
     }
 
     @AfterEach
