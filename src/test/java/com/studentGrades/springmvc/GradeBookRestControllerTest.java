@@ -188,6 +188,34 @@ public class GradeBookRestControllerTest {
                 .andExpect(jsonPath("$.status",is(404)))
                 .andExpect(jsonPath("$.message",is("Student or Grade was not found")));
     }
+    @Test
+    public void test_DeleteGrade_HttpRequest() throws Exception{
+        assertTrue(studentDao.findById(1).isPresent());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/grades/{id}/{gradeType}"
+        ,1,"math"))
+                .andExpect(content().contentType(APPLICATION_JSON_UTFS))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.studentGrades.mathGradeResults",hasSize(0)))
+                .andExpect(jsonPath("$.studentGrades.scienceGradeResults",hasSize(1)))
+                .andExpect(jsonPath("$.studentGrades.historyGradeResults",hasSize(1)))
+                .andExpect(jsonPath("$.emailAddress",is("eric.roby@yahoo.in")));
+    }
+    @Test
+    public void test_DeleteGrade_InvalidId_HttpRequest() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/grades/{id}/{gradeType}",
+                        100,"math"))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.status",is(404)))
+                .andExpect(jsonPath("$.message",is("Student or Grade was not found")));
+    }
+    @Test
+    public void test_DeleteGrade_InvalidGradeType_HttpRequest() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/grades/{id}/{gradeType}"
+                ,1,"Physics"))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.status",is(404)))
+                .andExpect(jsonPath("$.message",is("Student or Grade was not found")));
+    }
 
     @AfterEach
     public void cleanUpAfterTransaction() {
