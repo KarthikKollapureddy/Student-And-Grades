@@ -1,18 +1,12 @@
 package com.studentGrades.springmvc.controller;
 
 import com.studentGrades.springmvc.models.CollegeStudent;
-import com.studentGrades.springmvc.models.Grade;
 import com.studentGrades.springmvc.models.Gradebook;
-import com.studentGrades.springmvc.models.GradebookCollegeStudent;
 import com.studentGrades.springmvc.service.StudentAndGradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
-import java.util.stream.Stream;
 
 @Controller
 public class GradebookController {

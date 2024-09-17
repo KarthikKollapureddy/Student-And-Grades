@@ -25,8 +25,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.web.servlet.function.RequestPredicates.param;
 
 @TestPropertySource(properties = "./application.properties")
 @SpringBootTest
@@ -71,14 +75,15 @@ public class GradeBookRestControllerTest {
     public static final MediaType APPLICATION_JSON_UTFS = MediaType.APPLICATION_JSON;
 
     @BeforeAll
-    public static void setup(){
-        request =  new MockHttpServletRequest();
+    public static void setup() {
+        request = new MockHttpServletRequest();
         request.setParameter("firstname", "John");
         request.setParameter("lastname", "Ericsson");
         request.setParameter("emailAddress", "John@gmail.com");
     }
+
     @BeforeEach
-    public void setupDataBase(){
+    public void setupDataBase() {
         jdbc.execute(sqlCreateStudent);
         jdbc.execute(sqlCreateMathGrade);
         jdbc.execute(sqlCreateScienceGrade);
@@ -86,16 +91,32 @@ public class GradeBookRestControllerTest {
     }
 
     @Test
-    public void test_getStudents() throws Exception{
+    public void test_getStudents_HttpRequest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTFS))
-                .andExpect(jsonPath("$",hasSize(1)));
-
-
+                .andExpect(jsonPath("$", hasSize(1)));
     }
+
+    @Test
+    public void test_createStudent_HttpRequest() throws Exception {
+        student.setFirstname("first");
+        student.setLastname("Last");
+        student.setEmailAddress("myEmail@gmail.com");
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/")
+                        .contentType(APPLICATION_JSON_UTFS)
+                        .content(objectMapper.writeValueAsString(student)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON_UTFS))
+                .andExpect(jsonPath("$", hasSize(2)));
+//        check in DB
+        CollegeStudent verifyStudent = studentDao.findByEmailAddress("myEmail@gmail.com");
+        assertNotNull(verifyStudent);
+    }
+
     @AfterEach
-    public void cleanUpAfterTransaction(){
+    public void cleanUpAfterTransaction() {
         jdbc.execute(sqlDeleteStudent);
         jdbc.execute(sqlDeleteMathGrade);
         jdbc.execute(sqlDeleteScienceGrade);
