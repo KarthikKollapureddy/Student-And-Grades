@@ -20,7 +20,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @TestPropertySource(properties = "./application.properties")
 @SpringBootTest
@@ -80,8 +86,13 @@ public class GradeBookRestControllerTest {
     }
 
     @Test
-    public void test_init(){
-        System.out.println("test");
+    public void test_getStudents() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON_UTFS))
+                .andExpect(jsonPath("$",hasSize(1)));
+
+
     }
     @AfterEach
     public void cleanUpAfterTransaction(){

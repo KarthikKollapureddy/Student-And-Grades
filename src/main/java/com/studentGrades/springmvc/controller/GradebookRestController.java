@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RequestMapping("/api/v1")
+@RestController
 public class GradebookRestController {
     @Autowired
     private StudentAndGradeService studentService;
 
     @Autowired
     private Gradebook gradebook;
-
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<GradebookCollegeStudent> getStudents() {
