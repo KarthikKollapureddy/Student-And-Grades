@@ -67,6 +67,53 @@ public class StudentAndGradeServiceImpl implements StudentAndGradeService {
     }
 
     @Override
+    public Gradebook getGradebook() {
+        Iterable<CollegeStudent> collegeStudents = studentDao.findAll();
+
+        Iterable<MathGrade> mathGrades = mathGradeDao.findAll();
+
+        Iterable<ScienceGrade> scienceGrades = scienceGradeDao.findAll();
+
+        Iterable<HistoryGrade> historyGrades = historyGradeDao.findAll();
+
+        Gradebook gradebook = new Gradebook();
+
+        for (CollegeStudent collegeStudent : collegeStudents) {
+            List<Grade> mathGradesPerStudent = new ArrayList<>();
+            List<Grade> scienceGradesPerStudent = new ArrayList<>();
+            List<Grade> historyGradesPerStudent = new ArrayList<>();
+
+            for (MathGrade grade : mathGrades) {
+                if (grade.getStudentId() == collegeStudent.getId()) {
+                    mathGradesPerStudent.add(grade);
+                }
+            }
+            for (ScienceGrade grade : scienceGrades) {
+                if (grade.getStudentId() == collegeStudent.getId()) {
+                    scienceGradesPerStudent.add(grade);
+                }
+            }
+
+            for (HistoryGrade grade : historyGrades) {
+                if (grade.getStudentId() == collegeStudent.getId()) {
+                    historyGradesPerStudent.add(grade);
+                }
+            }
+
+            studentGrades.setMathGradeResults(mathGradesPerStudent);
+            studentGrades.setScienceGradeResults(scienceGradesPerStudent);
+            studentGrades.setHistoryGradeResults(historyGradesPerStudent);
+
+            GradebookCollegeStudent gradebookCollegeStudent = new GradebookCollegeStudent(collegeStudent.getId(), collegeStudent.getFirstname(), collegeStudent.getLastname(),
+                    collegeStudent.getEmailAddress(), studentGrades);
+
+            gradebook.getStudents().add(gradebookCollegeStudent);
+        }
+
+        return gradebook;
+    }
+
+    @Override
     public boolean createGrade(double grade, int studentId, String subject) {
         if(!isStudentNotNull(studentId)){
             return false;

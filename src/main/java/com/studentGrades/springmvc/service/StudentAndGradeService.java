@@ -1,6 +1,7 @@
 package com.studentGrades.springmvc.service;
 
 import com.studentGrades.springmvc.models.CollegeStudent;
+import com.studentGrades.springmvc.models.Gradebook;
 import com.studentGrades.springmvc.models.GradebookCollegeStudent;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -15,6 +16,8 @@ public interface StudentAndGradeService {
     void deleteStudentById(int studentID);
 
     Iterable<CollegeStudent> getGradeBook();
+
+    Gradebook getGradebook();
 
     boolean createGrade(double grade, int studentId, String subject);
 
