@@ -20,17 +20,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.web.servlet.function.RequestPredicates.param;
 
 @TestPropertySource(properties = "./application.properties")
 @SpringBootTest
@@ -113,6 +109,32 @@ public class GradeBookRestControllerTest {
 //        check in DB
         CollegeStudent verifyStudent = studentDao.findByEmailAddress("myEmail@gmail.com");
         assertNotNull(verifyStudent);
+    }
+    @Test
+    public void test_DeleteStudent_HttpRequest() throws Exception{
+//        initial check if student is present
+        assertTrue(studentDao.findById(1).isPresent());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/student/{id}",1))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON_UTFS))
+                .andExpect(jsonPath("$",hasSize(0)));
+//        check in db
+        Iterable<CollegeStudent> students = studentDao.findAll();
+        assertFalse(students.iterator().hasNext());
+        assertFalse(studentDao.findById(1).isPresent());
+    }
+    @Test
+    public void test_DeleteStudent_InvalidId_HttpRequest() throws Exception{
+        assertTrue(studentDao.findById(1).isPresent());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/student/{id}",199))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.status",is(404)))
+                .andExpect(jsonPath("$.message",is("Student or Grade was not found"))
+                );
+//        check in db
+        assertTrue(studentDao.findById(1).isPresent());
+
     }
 
     @AfterEach
