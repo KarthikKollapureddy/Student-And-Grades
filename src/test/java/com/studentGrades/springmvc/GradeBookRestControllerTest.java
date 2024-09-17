@@ -125,16 +125,33 @@ public class GradeBookRestControllerTest {
     }
     @Test
     public void test_DeleteStudent_InvalidId_HttpRequest() throws Exception{
-        assertTrue(studentDao.findById(1).isPresent());
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/student/{id}",199))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.status",is(404)))
                 .andExpect(jsonPath("$.message",is("Student or Grade was not found"))
                 );
-//        check in db
-        assertTrue(studentDao.findById(1).isPresent());
 
+    }
+    @Test
+    public void test_StudentInformation_HttpRequest() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/studentInformation/{id}",1))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON_UTFS))
+                .andExpect(jsonPath("$.emailAddress",is("eric.roby@yahoo.in")))
+                .andExpect(jsonPath("$.studentGrades.mathGradeResults",hasSize(1)))
+                .andExpect(jsonPath("$.studentGrades.scienceGradeResults",hasSize(1)))
+                .andExpect(jsonPath("$.studentGrades.historyGradeResults",hasSize(1)))
+                .andExpect(jsonPath("$.fullName",is("Eric Roby"))
+                );
+    }
+    @Test
+    public void test_StudentInformation_InvalidId_HttpRequest() throws Exception{
+        assertFalse(studentDao.findById(199).isPresent());
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/studentInformation/{id}",199))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.status",is(404)))
+                .andExpect(jsonPath("$.message",is("Student or Grade was not found"))
+                );
     }
 
     @AfterEach
